@@ -16,12 +16,13 @@ public class ClientGreeter {
       }
       //2. Create an integer for the server's port number
       int port = 8080;
-      //3. Surround steps 4-9 in a try-catch block that catches any IOExceptions.
+      //3. Surround steps 4-9 in  a try-catch block that catches any IOExceptions.
       try {
     	  Socket socket = new Socket(ip, port);
-    	  DataOutputStream dos = (DataOutputStream) socket.getOutputStream();
+    	  System.out.println(ip + " " + port);
+    	  DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
     	  dos.writeUTF("Wassup");
-    	  DataInputStream dis = (DataInputStream) socket.getInputStream();
+    	  DataInputStream dis = new DataInputStream(socket.getInputStream());
     	  dis.readUTF();
     	  socket.close();
       } catch (IOException e) {
