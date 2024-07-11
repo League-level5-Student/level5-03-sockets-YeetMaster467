@@ -32,6 +32,7 @@ public class Client {
 			socket = new Socket(nip, port);
 			dos = new DataOutputStream(socket.getOutputStream());
 			dis = new DataInputStream(socket.getInputStream());
+			new ClientGUI().showWindow();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

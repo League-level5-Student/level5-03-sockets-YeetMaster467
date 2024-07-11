@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class ClientGUI implements ActionListener {
+public class ServerGUI implements ActionListener {
 	private JFrame frame = new JFrame();
 	private JPanel panel = new JPanel();
 	private JTextField inputField = new JTextField(20);
@@ -34,7 +34,7 @@ public class ClientGUI implements ActionListener {
 			}
 		}
 		frame.add(panel);
-		frame.setTitle("Client");
+		frame.setTitle("Server");
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.pack();
@@ -42,7 +42,7 @@ public class ClientGUI implements ActionListener {
 		
 		while (Client.socket.isConnected()) {
 			try {
-				addMessage(new JLabel("Server: " + Client.dis.readUTF()));
+				addMessage(new JLabel("Client: " + Server.dis.readUTF()));
 				frame.pack();
 			} catch(EOFException e) {
 				addMessage(new JLabel("Connection Lost"));
@@ -55,12 +55,12 @@ public class ClientGUI implements ActionListener {
 			}
 		}
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			Client.dos.writeUTF(inputField.getText());
-			addMessage(new JLabel("Client: " + inputField.getText()));
+			Server.dos.writeUTF(inputField.getText());
+			addMessage(new JLabel("Server: " + inputField.getText()));
 			frame.pack();
 			inputField.setText("");
 		} catch (IOException e2) {
@@ -73,5 +73,4 @@ public class ClientGUI implements ActionListener {
 		lastMessages.remove(4);
 		frame.repaint();
 	}
-	
 }
