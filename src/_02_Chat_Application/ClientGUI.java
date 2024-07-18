@@ -23,6 +23,7 @@ public class ClientGUI implements ActionListener {
 	private JTextField inputField = new JTextField(20);
 	private JButton send = new JButton("Send");
 	private ArrayList<JLabel> lastMessages = new ArrayList<JLabel>();
+	Client c = new Client();
 	
 	public void showWindow () {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -40,9 +41,10 @@ public class ClientGUI implements ActionListener {
 		frame.pack();
 		send.addActionListener(this);
 		
-		while (Client.socket.isConnected()) {
+		while (c.socket.isConnected()) {
 			try {
-				addMessage(new JLabel("Server: " + Client.dis.readUTF()));
+				System.out.println(c.dis.readUTF());
+				addMessage(new JLabel("Server: " + c.dis.readUTF()));
 				frame.pack();
 			} catch(EOFException e) {
 				addMessage(new JLabel("Connection Lost"));
@@ -59,7 +61,7 @@ public class ClientGUI implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			Client.dos.writeUTF(inputField.getText());
+			c.dos.writeUTF(inputField.getText());
 			addMessage(new JLabel("Client: " + inputField.getText()));
 			frame.pack();
 			inputField.setText("");
@@ -70,7 +72,9 @@ public class ClientGUI implements ActionListener {
 	
 	public void addMessage (JLabel j) {
 		lastMessages.add(j);
-		lastMessages.remove(4);
+		if (lastMessages.size() > 4) {
+			lastMessages.remove(4);
+		}
 		frame.repaint();
 	}
 	

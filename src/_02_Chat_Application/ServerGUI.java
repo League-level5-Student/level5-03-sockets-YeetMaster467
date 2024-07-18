@@ -42,6 +42,7 @@ public class ServerGUI implements ActionListener {
 		
 		while (Client.socket.isConnected()) {
 			try {
+				System.out.println(Server.dis.readUTF());
 				addMessage(new JLabel("Client: " + Server.dis.readUTF()));
 				frame.pack();
 			} catch(EOFException e) {

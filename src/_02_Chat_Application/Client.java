@@ -14,9 +14,9 @@ import java.net.UnknownHostException;
 
 public class Client {
 	
-	static Socket socket = null;
-	static DataOutputStream dos = null;
-	static DataInputStream dis = null;
+	Socket socket = null;
+	DataOutputStream dos = null;
+	DataInputStream dis = null;
 
 	public static void main(String[] args) {
 		String ip;
