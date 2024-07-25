@@ -1,69 +1,54 @@
 package _03_Chat_Application_Reworked;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-public class Server {
+public class Client {
+	private String ip;
 	private int port;
-	
-	private ServerSocket server;
-	private Socket connection;
-	
+
+	Socket connection;
+
 	ObjectOutputStream os;
 	ObjectInputStream is;
 
-	public Server(int port) {
+	public Client(String ip, int port) {
+		this.ip = ip;
 		this.port = port;
 	}
-	
+
 	public void start(){
 		try {
-			server = new ServerSocket(port, 100);
 
-			connection = server.accept();
+			connection = new Socket(ip, port);
 
 			os = new ObjectOutputStream(connection.getOutputStream());
 			is = new ObjectInputStream(connection.getInputStream());
 
 			os.flush();
+
 			
-			// Messages are not printing or showing up on thingy
-
-			while (connection.isConnected()) {
-				try {
-					addMessage("Client: " + is.readObject());
-					System.out.println(is.readObject());
-				}catch(EOFException e) {
-					JOptionPane.showMessageDialog(null, "Connection Lost");
-					System.exit(0);
-				}
-			}
-
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public String getIPAddress() {
-		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			return "ERROR!!!!!";
+		
+		// Messages are not printing or showing up on thingy
+		
+		while (connection.isConnected()) {
+			try {
+				addMessage("Server: " + is.readObject());
+				System.out.println(is.readObject());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-	}
-
-	public int getPort() {
-		return port;
 	}
 	
 	public void sendMessage(String message) {
