@@ -24,35 +24,19 @@ public class Server {
 
 	public Server(int port) {
 		this.port = port;
-	}
-	
-	public void start(){
 		try {
 			server = new ServerSocket(port, 100);
-
+			
 			connection = server.accept();
 
 			os = new ObjectOutputStream(connection.getOutputStream());
 			is = new ObjectInputStream(connection.getInputStream());
 
-			os.flush();
-			
-			// Messages are not printing or showing up on thingy
-
-			while (connection.isConnected()) {
-				try {
-					addMessage("Client: " + is.readObject());
-					System.out.println(is.readObject());
-				}catch(EOFException e) {
-					JOptionPane.showMessageDialog(null, "Connection Lost");
-					System.exit(0);
-				}
-			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 	
 	public String getIPAddress() {
 		try {
@@ -67,13 +51,47 @@ public class Server {
 	}
 	
 	public void sendMessage(String message) {
+		System.out.println("Server sending message in class");
 		try {
-			if (os != null) {
+			if (os != null && connection.isConnected()) {
 				os.writeObject(message);
 				os.flush();
+				System.out.println("Server sent message in class");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	// Message is not printing or showing up on gui
+	
+	public ArrayList<String> readMessage () {
+		System.out.println("Server reading message in class");
+		if (connection.isConnected()) {
+			try {
+				os.flush();
+				String message = (String) is.readObject();
+				String message2 = (String) is.readObject();
+				System.out.println(message + " " + message2);
+				System.out.println("Server read message in class");
+				return addMessage("Client: " + message);
+			}catch(EOFException e) {
+				JOptionPane.showMessageDialog(null, "Connection Lost");
+				System.exit(0);
+				return null;
+			} catch (ClassNotFoundException e) {
+				// XXX Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			} catch (IOException e) {
+				// XXX Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		} else {
+			System.out.println("Dissconected.");
+			System.exit(0);
+			return null;
 		}
 	}
 	

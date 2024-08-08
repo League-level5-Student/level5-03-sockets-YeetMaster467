@@ -20,45 +20,53 @@ public class Client {
 	public Client(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
-	}
-
-	public void start(){
 		try {
-
 			connection = new Socket(ip, port);
-
+			
 			os = new ObjectOutputStream(connection.getOutputStream());
 			is = new ObjectInputStream(connection.getInputStream());
 
-			os.flush();
-
-			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// Messages are not printing or showing up on thingy
-		
-		while (connection.isConnected()) {
-			try {
-				addMessage("Server: " + is.readObject());
-				System.out.println(is.readObject());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
+
 	
 	public void sendMessage(String message) {
+		System.out.println("Client sending message in class");
 		try {
-			if (os != null) {
+			if (os != null && connection.isConnected()) {
 				os.writeObject(message);
 				os.flush();
+				System.out.println("Client sent message in class");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	// Message is not printing or showing up on gui
+	
+	public ArrayList<String> readMessage () {
+		System.out.println("Client reading message in class");
+		if (connection.isConnected()) {
+			try {
+				os.flush();
+				String message = (String) is.readObject();
+				String message2 = (String) is.readObject();
+				System.out.println(message + " " + message2);
+				System.out.println("Client read message in class");
+				return addMessage("Server: " + message);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		} else {
+			System.out.println("Disconnected");
+			System.exit(0);
+			return null;
 		}
 	}
 	

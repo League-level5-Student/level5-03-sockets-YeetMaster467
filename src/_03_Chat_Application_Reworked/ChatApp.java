@@ -1,5 +1,7 @@
 package _03_Chat_Application_Reworked;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -8,10 +10,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import _00_Click_Chat.networking.Client;
 
-public class ChatApp extends JFrame {
+public class ChatApp extends JFrame implements ActionListener {
+	Timer t = new Timer(1000, this);
 	JPanel panel = new JPanel();
 	JTextField input = new JTextField(20);
 	JButton send = new JButton("Send");
@@ -32,11 +36,13 @@ public class ChatApp extends JFrame {
 			setTitle("Server");
 			JOptionPane.showMessageDialog(null, "Server started at: " + server.getIPAddress() + "\nPort: " + server.getPort());
 			send.addActionListener(e -> {
+				System.out.println("Server sending message");
 				server.sendMessage(input.getText());
 				server.addMessage("Server: " + input.getText());
 				input.setText("");
 				pack();
 				repaint();
+				System.out.println("Server sent message");
 			});
 			panel.add(input);
 			panel.add(send);
@@ -50,7 +56,6 @@ public class ChatApp extends JFrame {
 			add(panel);
 			pack();
 			setLocationRelativeTo(null);
-			server.start();
 		} else {
 			setTitle("Client");
 			String ipStr = JOptionPane.showInputDialog("Enter the IP Address");
@@ -58,11 +63,13 @@ public class ChatApp extends JFrame {
 			int port = Integer.parseInt(prtStr);
 			client = new _03_Chat_Application_Reworked.Client(ipStr, port);
 			send.addActionListener(e -> {
+				System.out.println("Client sending message");
 				client.sendMessage(input.getText());
 				client.addMessage("Client: " + input.getText());
 				input.setText("");
 				pack();
 				repaint();
+				System.out.println("Client sent message");
 			});
 			panel.add(input);
 			panel.add(send);
@@ -76,7 +83,33 @@ public class ChatApp extends JFrame {
 			add(panel);
 			pack();
 			setLocationRelativeTo(null);
-			client.start();
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == t) {
+			if (server != null) {
+				System.out.println("Server reading message");
+				server.readMessage();
+				for (int i = 0; i < lastMessages.size(); i++) {
+					if (lastMessages.get(i) != null && !lastMessages.get(i).isBlank()) {
+						panel.add(new JLabel(lastMessages.get(i)));
+					}
+				}
+				panel.repaint();
+				System.out.println("Server read message");
+			} else if (client != null) {
+				System.out.println("Client reading message");
+				client.readMessage();
+				for (int i = 0; i < lastMessages.size(); i++) {
+					if (lastMessages.get(i) != null && !lastMessages.get(i).isBlank()) {
+						panel.add(new JLabel(lastMessages.get(i)));
+					}
+				}
+				panel.repaint();
+				
+			}
 		}
 	}
 	
