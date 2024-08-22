@@ -25,7 +25,7 @@ public class Server {
 	public Server(int port) {
 		this.port = port;
 		try {
-			server = new ServerSocket(port, 100);
+			server = new ServerSocket(port, 1000);
 			
 			connection = server.accept();
 
@@ -75,10 +75,10 @@ public class Server {
 				System.out.println(message + " " + message2);
 				System.out.println("Server read message in class");
 				return addMessage("Client: " + message);
-			}catch(EOFException e) {
-				JOptionPane.showMessageDialog(null, "Connection Lost");
-				System.exit(0);
-				return null;
+			//}catch(EOFException e) {
+				//JOptionPane.showMessageDialog(null, "Connection Lost");
+				//System.exit(0);
+				//return null;
 			} catch (ClassNotFoundException e) {
 				// XXX Auto-generated catch block
 				e.printStackTrace();
